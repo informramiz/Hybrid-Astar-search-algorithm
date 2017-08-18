@@ -73,11 +73,11 @@ int main() {
   for(int i = show_path.size()-1; i >= 0; i--)
   {
 
-      HBF::maze_s step = show_path[i];
-      cout << "##### step " << step.g << " #####" << endl;
-      cout << "x " << step.x << endl;
-      cout << "y " << step.y << endl;
-      cout << "theta " << step.theta << endl;
+    HBF::maze_s step = show_path[i];
+    cout << "##### step " << step.g << " #####" << endl;
+    cout << "x " << step.x << endl;
+    cout << "y " << step.y << endl;
+    cout << "theta " << step.theta << endl;
 
   }
 

@@ -41,25 +41,25 @@ public:
 
 
   /**
-    * Constructor
-    */
+   * Constructor
+   */
   HBF();
 
   /**
-  * Destructor
-  */
+   * Destructor
+   */
   virtual ~HBF();
 
 
   int theta_to_stack_number(double theta);
 
-    int idx(double float_num);
+  int idx(double float_num);
 
-    vector<maze_s> expand(maze_s state);
+  vector<maze_s> expand(maze_s state);
 
-    maze_path search(vector< vector<int> > grid, vector<double> start, vector<int> goal);
+  maze_path search(vector< vector<int> > grid, vector<double> start, vector<int> goal);
 
-    vector<maze_s> reconstruct_path(vector< vector< vector<maze_s> > > came_from, vector<double> start, HBF::maze_s final);
+  vector<maze_s> reconstruct_path(vector< vector< vector<maze_s> > > came_from, vector<double> start, HBF::maze_s final);
 
 
 };

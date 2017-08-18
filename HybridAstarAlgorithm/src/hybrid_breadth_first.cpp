@@ -30,7 +30,7 @@ int HBF::theta_to_stack_number(double theta){
   Takes an angle (in radians) and returns which "stack" in the 3D configuration space
   this angle corresponds to. Angles near 0 go in the lower stacks while angles near
   2 * pi go in the higher stacks.
-  */
+   */
 
   double new_theta = fmod((theta + 2 * M_PI),(2 * M_PI));
   int stack_number = (int)(round(new_theta * NUM_THETA_CELLS / (2*M_PI))) % NUM_THETA_CELLS;
@@ -42,7 +42,7 @@ int HBF::idx(double float_num) {
   /*
   Returns the index into the grid for continuous position. So if x is 3.621, then this
   would return 3 to indicate that 3.621 corresponds to array index 3.
-  */
+   */
 
   return int(floor(float_num));
 }
@@ -109,7 +109,7 @@ HBF::maze_path HBF::search(vector< vector<int> > grid, vector<double> start, vec
   Working Implementation of breadth first search. Does NOT use a heuristic
   and as a result this is pretty inefficient. Try modifying this algorithm
   into hybrid A* by adding heuristics appropriately.
-  */
+   */
 
   vector< vector< vector<maze_s> > > closed(NUM_THETA_CELLS, vector<vector<maze_s>>(grid[0].size(), vector<maze_s>(grid.size())));
   vector< vector< vector<int> > > closed_value(NUM_THETA_CELLS, vector<vector<int>>(grid[0].size(), vector<int>(grid.size())));
