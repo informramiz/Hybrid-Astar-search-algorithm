@@ -64,6 +64,7 @@ public:
 private:
   bool isValidCell(double x2, double y2,
                    const vector<vector<int> >& grid);
+  double deg2rad(double delta_i);
 };
 
 #endif /* HYBRID_BREADTH_FIRST_H_ */

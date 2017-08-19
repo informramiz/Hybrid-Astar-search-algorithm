@@ -47,6 +47,9 @@ int HBF::idx(double float_num) {
   return int(floor(float_num));
 }
 
+double HBF::deg2rad(double delta_i) {
+  return M_PI / 180.0 * delta_i;
+}
 
 vector<HBF::maze_s> HBF::expand(HBF::maze_s state) {
   int g = state.g;
@@ -56,11 +59,17 @@ vector<HBF::maze_s> HBF::expand(HBF::maze_s state) {
 
   int g2 = g+1;
   vector<HBF::maze_s> next_states;
+  //try steering angle from max left to max right to
+  //find all possible configurations which will be later
+  //checked for validity in `search()` function
   for(double delta_i = -35; delta_i < 40; delta_i+=5)
   {
-
-    double delta = M_PI / 180.0 * delta_i;
+    //convert from degree to radian
+    double delta = deg2rad(delta_i);
+    //calculate rate of change of heading using formula: v/L.tan(delta)
     double omega = SPEED / LENGTH * tan(delta);
+
+    //predict new heading based on rate of change of heading
     double theta2 = theta + omega;
     if(theta2 > 0)
     {
