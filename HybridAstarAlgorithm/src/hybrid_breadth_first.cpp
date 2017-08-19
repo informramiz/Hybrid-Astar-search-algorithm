@@ -68,16 +68,19 @@ vector<HBF::maze_s> HBF::expand(HBF::maze_s state) {
 
     //convert from degree to radian
     double delta = deg2rad(delta_i);
-    //calculate rate of change of heading using formula: v/L.tan(delta)
+    //calculate rate of change of heading using formula: w = v/L * tan(delta)
     double omega = SPEED / LENGTH * tan(delta);
 
     //predict new heading based on rate of change of heading
     double theta2 = theta + omega;
+    //validate angle value
     if (theta2 > 0) {
       theta2 += 2 * M_PI;
     }
 
     //predict new (x, y) using motion equations, assuming time change (delta_t)= 1
+    //x2 = x1 + v * delta_t * cos(theta)
+    //y2 = y1 + v * delta_t * cos(theta)
     double x2 = x + SPEED * cos(theta2);
     double y2 = y + SPEED * sin(theta2);
 
@@ -137,20 +140,28 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
       vector<vector<int>>(grid[0].size(), vector<int>(grid.size())));
   vector<vector<vector<maze_s> > > came_from(NUM_THETA_CELLS,
       vector<vector<maze_s>>(grid[0].size(), vector<maze_s>(grid.size())));
+
+  //initial values
   double theta = start[2];
   int stack = theta_to_stack_number(theta);
   int g = 0;
 
+  //update start node
   maze_s state;
   state.g = g;
   state.x = start[0];
   state.y = start[1];
 
+  //mark start node as closed and visited
   closed[stack][idx(state.x)][idx(state.y)] = state;
   closed_value[stack][idx(state.x)][idx(state.y)] = 1;
   came_from[stack][idx(state.x)][idx(state.y)] = state;
 
+  //we want to keep a count of total nodes closed/checked
   int total_closed = 1;
+
+  //initialize list of valid next states/configs as there can be
+  //invalid configs as well (that lead to obstacles or out of grid or high cost)
   vector<maze_s> opened = { state };
 
   bool finished = false;
