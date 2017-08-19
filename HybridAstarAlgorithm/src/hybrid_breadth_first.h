@@ -60,9 +60,9 @@ public:
   maze_path search(vector< vector<int> > grid, vector<double> start, vector<int> goal);
 
   vector<maze_s> reconstruct_path(vector< vector< vector<maze_s> > > came_from, vector<double> start, HBF::maze_s final);
-
+  void print_grid(const vector<vector<double> > &grid);
 private:
-  bool isValidCell(double x2, double y2,
+  bool is_valid_cell(double x2, double y2,
                    const vector<vector<int> >& grid);
   double deg2rad(double delta_i);
 };

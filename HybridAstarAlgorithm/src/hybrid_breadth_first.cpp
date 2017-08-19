@@ -50,6 +50,18 @@ double HBF::deg2rad(double delta_i) {
   return M_PI / 180.0 * delta_i;
 }
 
+void HBF::print_grid(const vector<vector<double> > &grid) {
+  for(int i = 0; i < grid.size(); i++)
+    {
+      cout << grid[i][0];
+      for(int j = 1; j < grid[0].size(); j++)
+      {
+        cout << "," << grid[i][j];
+      }
+      cout << endl;
+    }
+}
+
 vector<HBF::maze_s> HBF::expand(HBF::maze_s state) {
   int g = state.g;
   double x = state.x;
