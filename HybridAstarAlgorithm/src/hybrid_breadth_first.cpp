@@ -14,7 +14,6 @@
 
 using namespace std;
 
-
 /**
  * Initializes HBF
  */
@@ -22,26 +21,26 @@ HBF::HBF() {
 
 }
 
-HBF::~HBF() {}
+HBF::~HBF() {
+}
 
-
-int HBF::theta_to_stack_number(double theta){
+int HBF::theta_to_stack_number(double theta) {
   /*
-  Takes an angle (in radians) and returns which "stack" in the 3D configuration space
-  this angle corresponds to. Angles near 0 go in the lower stacks while angles near
-  2 * pi go in the higher stacks.
+   Takes an angle (in radians) and returns which "stack" in the 3D configuration space
+   this angle corresponds to. Angles near 0 go in the lower stacks while angles near
+   2 * pi go in the higher stacks.
    */
 
-  double new_theta = fmod((theta + 2 * M_PI),(2 * M_PI));
-  int stack_number = (int)(round(new_theta * NUM_THETA_CELLS / (2*M_PI))) % NUM_THETA_CELLS;
+  double new_theta = fmod((theta + 2 * M_PI), (2 * M_PI));
+  int stack_number = (int) (round(new_theta * NUM_THETA_CELLS / (2 * M_PI)))
+      % NUM_THETA_CELLS;
   return stack_number;
 }
 
-
 int HBF::idx(double float_num) {
   /*
-  Returns the index into the grid for continuous position. So if x is 3.621, then this
-  would return 3 to indicate that 3.621 corresponds to array index 3.
+   Returns the index into the grid for continuous position. So if x is 3.621, then this
+   would return 3 to indicate that 3.621 corresponds to array index 3.
    */
 
   return int(floor(float_num));
@@ -57,13 +56,16 @@ vector<HBF::maze_s> HBF::expand(HBF::maze_s state) {
   double y = state.y;
   double theta = state.theta;
 
-  int g2 = g+1;
+  //update g value for next cells
+  int g2 = g + 1;
+
   vector<HBF::maze_s> next_states;
+
   //try steering angle from max left to max right to
   //find all possible configurations which will be later
   //checked for validity in `search()` function
-  for(double delta_i = -35; delta_i < 40; delta_i+=5)
-  {
+  for (double delta_i = -35; delta_i < 40; delta_i += 5) {
+
     //convert from degree to radian
     double delta = deg2rad(delta_i);
     //calculate rate of change of heading using formula: v/L.tan(delta)
@@ -71,26 +73,31 @@ vector<HBF::maze_s> HBF::expand(HBF::maze_s state) {
 
     //predict new heading based on rate of change of heading
     double theta2 = theta + omega;
-    if(theta2 > 0)
-    {
-      theta2 += 2*M_PI;
+    if (theta2 > 0) {
+      theta2 += 2 * M_PI;
     }
+
+    //predict new (x, y) using motion equations, assuming time change (delta_t)= 1
     double x2 = x + SPEED * cos(theta2);
     double y2 = y + SPEED * sin(theta2);
+
+    //add this predicted state to set of next possible (valid/invalid) states.
     HBF::maze_s state2;
     state2.g = g2;
     state2.x = x2;
     state2.y = y2;
     state2.theta = theta2;
     next_states.push_back(state2);
-
   }
+
   return next_states;
 }
 
-vector< HBF::maze_s> HBF::reconstruct_path(vector< vector< vector<HBF::maze_s> > > came_from, vector<double> start, HBF::maze_s final){
+vector<HBF::maze_s> HBF::reconstruct_path(
+    vector<vector<vector<HBF::maze_s> > > came_from, vector<double> start,
+    HBF::maze_s final) {
 
-  vector<maze_s> path = {final};
+  vector<maze_s> path = { final };
 
   int stack = theta_to_stack_number(final.theta);
 
@@ -100,8 +107,7 @@ vector< HBF::maze_s> HBF::reconstruct_path(vector< vector< vector<HBF::maze_s> >
 
   double x = current.x;
   double y = current.y;
-  while( x != start[0] && y != start[1] )
-  {
+  while (x != start[0] && y != start[1]) {
     path.push_back(current);
     current = came_from[stack][idx(x)][idx(y)];
     x = current.x;
@@ -113,21 +119,24 @@ vector< HBF::maze_s> HBF::reconstruct_path(vector< vector< vector<HBF::maze_s> >
 
 }
 
-bool HBF::isValidCell(double x2, double y2,
-                      const vector<vector<int> >& grid) {
+bool HBF::isValidCell(double x2, double y2, const vector<vector<int> >& grid) {
   return (x2 >= 0 && x2 < grid.size()) && (y2 >= 0 && y2 < grid[0].size());
 }
 
-HBF::maze_path HBF::search(vector< vector<int> > grid, vector<double> start, vector<int> goal) {
+HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
+                           vector<int> goal) {
   /*
-  Working Implementation of breadth first search. Does NOT use a heuristic
-  and as a result this is pretty inefficient. Try modifying this algorithm
-  into hybrid A* by adding heuristics appropriately.
+   Working Implementation of breadth first search. Does NOT use a heuristic
+   and as a result this is pretty inefficient. Try modifying this algorithm
+   into hybrid A* by adding heuristics appropriately.
    */
 
-  vector< vector< vector<maze_s> > > closed(NUM_THETA_CELLS, vector<vector<maze_s>>(grid[0].size(), vector<maze_s>(grid.size())));
-  vector< vector< vector<int> > > closed_value(NUM_THETA_CELLS, vector<vector<int>>(grid[0].size(), vector<int>(grid.size())));
-  vector< vector< vector<maze_s> > > came_from(NUM_THETA_CELLS, vector<vector<maze_s>>(grid[0].size(), vector<maze_s>(grid.size())));
+  vector<vector<vector<maze_s> > > closed(NUM_THETA_CELLS,
+      vector<vector<maze_s>>(grid[0].size(), vector<maze_s>(grid.size())));
+  vector<vector<vector<int> > > closed_value(NUM_THETA_CELLS,
+      vector<vector<int>>(grid[0].size(), vector<int>(grid.size())));
+  vector<vector<vector<maze_s> > > came_from(NUM_THETA_CELLS,
+      vector<vector<maze_s>>(grid[0].size(), vector<maze_s>(grid.size())));
   double theta = start[2];
   int stack = theta_to_stack_number(theta);
   int g = 0;
@@ -142,11 +151,10 @@ HBF::maze_path HBF::search(vector< vector<int> > grid, vector<double> start, vec
   came_from[stack][idx(state.x)][idx(state.y)] = state;
 
   int total_closed = 1;
-  vector<maze_s> opened = {state};
+  vector<maze_s> opened = { state };
 
   bool finished = false;
-  while(!opened.empty())
-  {
+  while (!opened.empty()) {
 
     maze_s next = opened[0]; //grab first elment
     opened.erase(opened.begin()); //pop first element
@@ -154,8 +162,7 @@ HBF::maze_path HBF::search(vector< vector<int> > grid, vector<double> start, vec
     int x = next.x;
     int y = next.y;
 
-    if(idx(x) == goal[0] && idx(y) == goal[1])
-    {
+    if (idx(x) == goal[0] && idx(y) == goal[1]) {
       cout << "found path to goal in " << total_closed << " expansions" << endl;
       maze_path path;
       path.closed = closed;
@@ -166,15 +173,13 @@ HBF::maze_path HBF::search(vector< vector<int> > grid, vector<double> start, vec
     }
     vector<maze_s> next_state = expand(next);
 
-    for(int i = 0; i < next_state.size(); i++)
-    {
+    for (int i = 0; i < next_state.size(); i++) {
       int g2 = next_state[i].g;
       double x2 = next_state[i].x;
       double y2 = next_state[i].y;
       double theta2 = next_state[i].theta;
 
-      if (!isValidCell(x2, y2, grid))
-      {
+      if (!isValidCell(x2, y2, grid)) {
         //invalid cell
         continue;
       }
@@ -184,8 +189,8 @@ HBF::maze_path HBF::search(vector< vector<int> > grid, vector<double> start, vec
       //check if
       //1. this cell is in open cells list
       //2. is not an obstacle
-      if(closed_value[stack2][idx(x2)][idx(y2)] == 0 && grid[idx(x2)][idx(y2)] == 0)
-      {
+      if (closed_value[stack2][idx(x2)][idx(y2)] == 0
+          && grid[idx(x2)][idx(y2)] == 0) {
 
         maze_s state2;
         state2.g = g2;
@@ -201,7 +206,6 @@ HBF::maze_path HBF::search(vector< vector<int> > grid, vector<double> start, vec
         total_closed += 1;
       }
 
-
     }
 
   }
@@ -213,6 +217,4 @@ HBF::maze_path HBF::search(vector< vector<int> > grid, vector<double> start, vec
   return path;
 
 }
-
-
 
