@@ -61,7 +61,9 @@ public:
 
   vector<maze_s> reconstruct_path(vector< vector< vector<maze_s> > > came_from, vector<double> start, HBF::maze_s final);
 
-
+private:
+  bool isValidCell(double x2, double y2,
+                   const vector<vector<int> >& grid);
 };
 
 #endif /* HYBRID_BREADTH_FIRST_H_ */

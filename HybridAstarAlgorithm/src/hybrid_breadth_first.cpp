@@ -104,6 +104,11 @@ vector< HBF::maze_s> HBF::reconstruct_path(vector< vector< vector<HBF::maze_s> >
 
 }
 
+bool HBF::isValidCell(double x2, double y2,
+                      const vector<vector<int> >& grid) {
+  return (x2 >= 0 && x2 < grid.size()) && (y2 >= 0 && y2 < grid[0].size());
+}
+
 HBF::maze_path HBF::search(vector< vector<int> > grid, vector<double> start, vector<int> goal) {
   /*
   Working Implementation of breadth first search. Does NOT use a heuristic
@@ -126,8 +131,10 @@ HBF::maze_path HBF::search(vector< vector<int> > grid, vector<double> start, vec
   closed[stack][idx(state.x)][idx(state.y)] = state;
   closed_value[stack][idx(state.x)][idx(state.y)] = 1;
   came_from[stack][idx(state.x)][idx(state.y)] = state;
+
   int total_closed = 1;
   vector<maze_s> opened = {state};
+
   bool finished = false;
   while(!opened.empty())
   {
@@ -157,13 +164,17 @@ HBF::maze_path HBF::search(vector< vector<int> > grid, vector<double> start, vec
       double y2 = next_state[i].y;
       double theta2 = next_state[i].theta;
 
-      if((x2 < 0 || x2 >= grid.size()) || (y2 < 0 || y2 >= grid[0].size()))
+      if (!isValidCell(x2, y2, grid))
       {
         //invalid cell
         continue;
       }
+
       int stack2 = theta_to_stack_number(theta2);
 
+      //check if
+      //1. this cell is in open cells list
+      //2. is not an obstacle
       if(closed_value[stack2][idx(x2)][idx(y2)] == 0 && grid[idx(x2)][idx(y2)] == 0)
       {
 
