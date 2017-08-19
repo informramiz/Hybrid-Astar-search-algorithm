@@ -119,7 +119,7 @@ vector<HBF::maze_s> HBF::reconstruct_path(
 
 }
 
-bool HBF::isValidCell(double x2, double y2, const vector<vector<int> >& grid) {
+bool HBF::is_valid_cell(double x2, double y2, const vector<vector<int> >& grid) {
   return (x2 >= 0 && x2 < grid.size()) && (y2 >= 0 && y2 < grid[0].size());
 }
 
@@ -179,7 +179,7 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
       double y2 = next_state[i].y;
       double theta2 = next_state[i].theta;
 
-      if (!isValidCell(x2, y2, grid)) {
+      if (!is_valid_cell(x2, y2, grid)) {
         //invalid cell
         continue;
       }
