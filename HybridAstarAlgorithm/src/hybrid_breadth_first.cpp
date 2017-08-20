@@ -80,12 +80,18 @@ vector<vector<double> > HBF::calculate_euclidean_heuristic(const vector<vector<i
 }
 
 double HBF::euclidean(int x1, int y1, int x2, int y2) {
-//  int dist_x = abs(x1 - x2);
-//  int dist_y =  abs(y1 - y2);
-//  int dist = dist_x + dist_y;
-//
-//  return dist;
+  //  int dist_x = abs(x1 - x2);
+  //  int dist_y =  abs(y1 - y2);
+  //  int dist = dist_x + dist_y;
+  //
+  //  return dist;
 
+  int dist_x = (x1 - x2);
+  int dist_y =  (y1 - y2);
+  int squared_dist = pow(dist_x, 2) + pow(dist_y, 2);
+
+  return sqrt(squared_dist);
+}
   int dist_x_squared = (x1 - x2);
   int dist_y_squared =  (y1 - y2);
   int squared_dist = pow(dist_x_squared, 2) + pow(dist_y_squared, 2);
