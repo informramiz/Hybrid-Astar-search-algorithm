@@ -62,6 +62,37 @@ void HBF::print_grid(const vector<vector<double> > &grid) {
     }
 }
 
+vector<vector<double> > HBF::calculate_euclidean_heuristic(const vector<vector<int> > &grid, const vector<int> goal) {
+  int goal_x = goal[0];
+  int goal_y = goal[1];
+
+  vector<vector<double> > dist_grid(grid.size(), vector<double>(grid[0].size()));
+
+  for (int i = 0; i < grid.size(); ++i) {
+    for (int j = 0; j < grid[0].size(); ++j) {
+      dist_grid[i][j] = euclidean(goal_x, goal_y, j, i);;
+    }
+  }
+
+  print_grid(dist_grid);
+
+  return dist_grid;
+}
+
+double HBF::euclidean(int x1, int y1, int x2, int y2) {
+//  int dist_x = abs(x1 - x2);
+//  int dist_y =  abs(y1 - y2);
+//  int dist = dist_x + dist_y;
+//
+//  return dist;
+
+  int dist_x_squared = (x1 - x2);
+  int dist_y_squared =  (y1 - y2);
+  int squared_dist = pow(dist_x_squared, 2) + pow(dist_y_squared, 2);
+
+  return sqrt(squared_dist);
+}
+
 vector<HBF::maze_s> HBF::expand(HBF::maze_s state) {
   int g = state.g;
   double x = state.x;
@@ -140,6 +171,7 @@ bool HBF::is_valid_cell(double x2, double y2, const vector<vector<int> >& grid) 
 
 HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
                            vector<int> goal) {
+  vector<vector<double> > heuristic = calculate_euclidean_heuristic(grid, goal);
   /*
    Working Implementation of breadth first search. Does NOT use a heuristic
    and as a result this is pretty inefficient. Try modifying this algorithm
