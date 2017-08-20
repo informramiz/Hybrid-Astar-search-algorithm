@@ -63,9 +63,10 @@ public:
   void print_grid(const vector<vector<double> > &grid);
 private:
   bool is_valid_cell(double x2, double y2,
-                   const vector<vector<int> >& grid);
+                     const vector<vector<int> >& grid);
   double deg2rad(double delta_i);
-  vector<vector <double> > calculate_euclidean_heuristic(const vector<vector<int> > &grid, const vector<int> goal);
+
+  vector<vector <double> > calculate_euclidean_heuristic(const vector<vector<int> > &grid, const vector<int> &goal);
   double euclidean(int x1, int y1, int x2, int y2);
 };
 

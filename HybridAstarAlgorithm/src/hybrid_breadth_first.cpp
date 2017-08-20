@@ -33,7 +33,7 @@ int HBF::theta_to_stack_number(double theta) {
 
   double new_theta = fmod((theta + 2 * M_PI), (2 * M_PI));
   int stack_number = (int) (round(new_theta * NUM_THETA_CELLS / (2 * M_PI)))
-      % NUM_THETA_CELLS;
+          % NUM_THETA_CELLS;
   return stack_number;
 }
 
@@ -52,17 +52,17 @@ double HBF::deg2rad(double delta_i) {
 
 void HBF::print_grid(const vector<vector<double> > &grid) {
   for(int i = 0; i < grid.size(); i++)
+  {
+    cout << grid[i][0];
+    for(int j = 1; j < grid[0].size(); j++)
     {
-      cout << grid[i][0];
-      for(int j = 1; j < grid[0].size(); j++)
-      {
-        cout << "," << grid[i][j];
-      }
-      cout << endl;
+      cout << "," << grid[i][j];
     }
+    cout << endl;
+  }
 }
 
-vector<vector<double> > HBF::calculate_euclidean_heuristic(const vector<vector<int> > &grid, const vector<int> goal) {
+vector<vector<double> > HBF::calculate_euclidean_heuristic(const vector<vector<int> > &grid, const vector<int> &goal) {
   int goal_x = goal[0];
   int goal_y = goal[1];
 
