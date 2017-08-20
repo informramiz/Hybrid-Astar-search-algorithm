@@ -92,9 +92,42 @@ double HBF::euclidean(int x1, int y1, int x2, int y2) {
 
   return sqrt(squared_dist);
 }
-  int dist_x_squared = (x1 - x2);
-  int dist_y_squared =  (y1 - y2);
-  int squared_dist = pow(dist_x_squared, 2) + pow(dist_y_squared, 2);
+
+/**
+ * ---- Non-holonomic without obstacles heuristic-----
+ *
+ * Calculates 3D (x, y, theta) grid of heuristic using euclidean distance. This heuristic can be used to achieve
+ * goal in desired heading (theta)
+ */
+vector<vector<vector<double> > > HBF::calculate_euclidean_heuristic_3d(const vector<vector<int> > &grid, const vector<int> &goal) {
+  int goal_x = goal[0];
+  int goal_y = goal[1];
+  double goal_theta = goal[2];
+
+  vector<vector<vector<double> > > dist_grid(NUM_THETA_CELLS, vector<vector<double> >(grid[0].size(), vector<double>(grid.size())));
+
+  for (int i = 0; i < grid.size(); ++i) {
+    for (int j = 0; j < grid[0].size(); ++j) {
+      for (int theta = -35; theta < 40; theta += 5) {
+        double theta_rad = deg2rad(theta);
+        int theta_stack_number = theta_to_stack_number(theta_rad);
+        dist_grid[theta_stack_number][j][i] = euclidean_3d(goal_x, goal_y, goal_theta, j, i, theta_rad);
+      }
+    }
+  }
+
+  cout << endl;
+  print_grid(dist_grid[40]);
+  cout << endl;
+
+  return dist_grid;
+}
+
+double HBF::euclidean_3d(int x1, int y1, double theta_rad1, int x2, int y2, double theta_rad2) {
+  int dist_x = (x1 - x2);
+  int dist_y =  (y1 - y2);
+  double dist_theta = (theta_rad1 - theta_rad2);
+  double squared_dist = pow(dist_x, 2) + pow(dist_y, 2) + pow(dist_theta, 2);
 
   return sqrt(squared_dist);
 }
@@ -177,7 +210,8 @@ bool HBF::is_valid_cell(double x2, double y2, const vector<vector<int> >& grid) 
 
 HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
                            vector<int> goal) {
-  vector<vector<double> > heuristic = calculate_euclidean_heuristic(grid, goal);
+//  vector<vector<double> > heuristic = calculate_euclidean_heuristic(grid, goal);
+  vector<vector<vector<double> > > heuristic1 = calculate_euclidean_heuristic_3d(grid, goal);
   /*
    Working Implementation of breadth first search. Does NOT use a heuristic
    and as a result this is pretty inefficient. Try modifying this algorithm

@@ -68,6 +68,15 @@ private:
 
   vector<vector <double> > calculate_euclidean_heuristic(const vector<vector<int> > &grid, const vector<int> &goal);
   double euclidean(int x1, int y1, int x2, int y2);
+
+  /**
+   * ---- Non-holonomic without obstacles heuristic-----
+   *
+   * Calculates 3D (x, y, theta) grid of heuristic using euclidean distance. This heuristic can be used to achieve
+   * goal in desired heading (theta)
+   */
+  vector<vector<vector<double> > > calculate_euclidean_heuristic_3d(const vector<vector<int> > &grid, const vector<int> &goal);
+  double euclidean_3d(int x1, int y1, double theta_rad1, int x2, int y2, double theta_rad2);
 };
 
 #endif /* HYBRID_BREADTH_FIRST_H_ */
