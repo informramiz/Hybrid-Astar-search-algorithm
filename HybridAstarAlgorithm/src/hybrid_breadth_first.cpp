@@ -109,36 +109,6 @@ vector<int> HBF::move(const vector<int> &current_cell, const vector<int> &move) 
   return new_cell;
 }
 
-vector<int> move_left(const vector<int> &current_cell) {
-  vector<int> left_cell(current_cell.size());
-  //row remains same
-  left_cell[0] = current_cell[0];
-  //increment column
-  left_cell[1] = current_cell[1] + 1;
-
-  return left_cell;
-}
-
-vector<int> move_right(const vector<int> &current_cell) {
-  vector<int> left_cell(current_cell.size());
-  //row remains same
-  left_cell[0] = current_cell[0];
-  //decrement column
-  left_cell[1] = current_cell[1] - 1;
-
-  return left_cell;
-}
-
-vector<int> move_forward(const vector<int> &current_cell) {
-  vector<int> left_cell(current_cell.size());
-  //increment row
-  left_cell[0] = current_cell[0] + 1;
-  //column remains same
-  left_cell[1] = current_cell[1];
-
-  return left_cell;
-}
-
 int dynamic_programming_recursive(vector<vector<int> > &grid, const vector<int> &start, const vector<int> &goal) {
 
 }
