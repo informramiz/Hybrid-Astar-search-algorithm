@@ -76,14 +76,16 @@ private:
    * goal in desired heading (theta)
    */
   vector<vector<vector<double> > > calculate_euclidean_heuristic_3d(const vector<vector<int> > &grid, const vector<int> &goal);
-  vector<vector<int> > holomonic_moves = {
+
+  vector<vector<int> > holomonic_moves_ = {
       {-1, 0}, //go up
       {1, 0}, //go down
       {0, 1}, //go left
       {0, -1}, //go right
   };
 
-  vector<string> holomonic_moves_names = {"Up", "Down", "Left", "Right"};
+  vector<string> holomonic_moves_names_ = {"Up", "Down", "Left", "Right"};
+
   const int MOVE_UP_INDEX = 0;
   const int MOVE_DOWN_INDEX = 1;
   const int MOVE_LEFT_INDEX = 2;
