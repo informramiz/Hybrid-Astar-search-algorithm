@@ -84,6 +84,10 @@ private:
   };
 
   vector<string> holomonic_moves_names = {"Up", "Down", "Left", "Right"};
+  const int MOVE_UP_INDEX = 0;
+  const int MOVE_DOWN_INDEX = 1;
+  const int MOVE_LEFT_INDEX = 2;
+  const int MOVE_RIGHT_INDEX = 3;
 };
 
 #endif /* HYBRID_BREADTH_FIRST_H_ */
