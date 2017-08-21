@@ -11,6 +11,7 @@
 #include <math.h>
 #include <vector>
 #include "hybrid_breadth_first.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -50,19 +51,6 @@ double HBF::deg2rad(double delta_i) {
   return M_PI / 180.0 * delta_i;
 }
 
-template<class T>
-void HBF::print_grid(const vector<vector<T> > &grid) {
-  for(int i = 0; i < grid.size(); i++)
-  {
-    cout << grid[i][0];
-    for(int j = 1; j < grid[0].size(); j++)
-    {
-      cout << "," << grid[i][j];
-    }
-    cout << endl;
-  }
-}
-
 vector<vector<double> > HBF::calculate_euclidean_heuristic(const vector<vector<int> > &grid, const vector<int> &goal) {
   int goal_x = goal[0];
   int goal_y = goal[1];
@@ -75,7 +63,7 @@ vector<vector<double> > HBF::calculate_euclidean_heuristic(const vector<vector<i
     }
   }
 
-  print_grid(dist_grid);
+  Utils::print_grid(dist_grid);
 
   return dist_grid;
 }
@@ -118,10 +106,58 @@ vector<vector<vector<double> > > HBF::calculate_euclidean_heuristic_3d(const vec
   }
 
   cout << endl;
-  print_grid(dist_grid[40]);
+  Utils::print_grid(dist_grid[0]);
   cout << endl;
 
   return dist_grid;
+}
+
+vector<int> move_left(const vector<int> &current_cell) {
+  vector<int> left_cell(current_cell.size());
+  //row remains same
+  left_cell[0] = current_cell[0];
+  //increment column
+  left_cell[1] = current_cell[1] + 1;
+
+  return left_cell;
+}
+
+vector<int> move_right(const vector<int> &current_cell) {
+  vector<int> left_cell(current_cell.size());
+  //row remains same
+  left_cell[0] = current_cell[0];
+  //decrement column
+  left_cell[1] = current_cell[1] - 1;
+
+  return left_cell;
+}
+
+vector<int> move_forward(const vector<int> &current_cell) {
+  vector<int> left_cell(current_cell.size());
+  //increment row
+  left_cell[0] = current_cell[0] + 1;
+  //column remains same
+  left_cell[1] = current_cell[1];
+
+  return left_cell;
+}
+
+int dynamic_programming_recursive(vector<vector<int> > &grid, const vector<int> &start, const vector<int> &goal) {
+
+}
+
+vector<vector<double> > HBF::dynamic_programming_heuristic(const vector<vector<int> > &grid, const vector<int> &start, const vector<int> &goal) {
+  int start_x = start[0];
+  int start_y = start[1];
+
+  int goal_x = goal[0];
+  int goal_y = goal[1];
+
+  for (int i = 0; i < grid.size(); ++i) {
+    for (int j = 0; j < grid[0].size(); ++j) {
+      //      dynamic_programming_recursive()
+    }
+  }
 }
 
 double HBF::euclidean_3d(int x1, int y1, double theta_rad1, int x2, int y2, double theta_rad2) {
