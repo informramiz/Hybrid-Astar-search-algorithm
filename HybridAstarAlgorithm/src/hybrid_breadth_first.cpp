@@ -34,7 +34,7 @@ int HBF::theta_to_stack_number(double theta) {
 
   double new_theta = fmod((theta + 2 * M_PI), (2 * M_PI));
   int stack_number = (int) (round(new_theta * NUM_THETA_CELLS / (2 * M_PI)))
-              % NUM_THETA_CELLS;
+                              % NUM_THETA_CELLS;
   return stack_number;
 }
 
@@ -109,22 +109,124 @@ vector<int> HBF::move(const vector<int> &current_cell, const vector<int> &move) 
   return new_cell;
 }
 
-int dynamic_programming_recursive(vector<vector<int> > &grid, const vector<int> &start, const vector<int> &goal) {
+int HBF::f_shortest_path_cost(vector<vector<int> > &grid,
+                              vector<vector<int> > &cost_grid,
+                              const vector<int> &cell,
+                              const vector<int> &goal) {
+  //handle base case
+  if (cell == goal) {
+    //passed cell is actually goal cell so no cost incurred
+    return 0;
+  }
 
-}
+  int cell_row = cell[0];
+  int cell_col = cell[1];
 
-vector<vector<double> > HBF::dynamic_programming_heuristic(const vector<vector<int> > &grid, const vector<int> &start, const vector<int> &goal) {
-  int start_x = start[0];
-  int start_y = start[1];
+  //check if cost already calculated
+  if (cost_grid[cell_row][cell_col] != -1) {
+    //cost has already been calculated for this cell
+    return cost_grid[cell_row][cell_col];
+  }
 
-  int goal_x = goal[0];
-  int goal_y = goal[1];
+  //handle obstacle
+  if (grid[cell_row][cell_col] == 1) {
+    //assign it maximum cost
+    return 999999;
+  }
 
-  for (int i = 0; i < grid.size(); ++i) {
-    for (int j = 0; j < grid[0].size(); ++j) {
-      //      dynamic_programming_recursive()
+  //mark this cell as visited
+  grid[cell_row][cell_col] = 1;
+
+  //initialize with a very high value
+  int min_cost = 999999;
+
+  //perform each valid move and pick the minimum cost from all moves
+  for (int i = 0; i < holomonic_moves_.size(); ++i) {
+    //make a move
+    vector<int> next_cell = move(cell, holomonic_moves_[i]);
+    int next_row = next_cell[0];
+    int next_col = next_cell[1];
+
+    //check if this move is valid or not
+    if (!is_valid_cell(grid, next_cell)) {
+      //invalid move, ignore this move
+      continue;
+    }
+
+    //check if this next cell is an obstacle
+    if (grid[next_row][next_col] == 1) {
+      //assign maximum cost to it
+      cost_grid[next_row][next_col] = 999999;
+      //as it is obstacle, ignore this move
+      continue;
+    }
+
+    int cost = cost_grid[next_row][next_col];
+
+    //check if cost for next_cell has already been calculated or not.
+    //if cost is -1 then it means cost has not been calculated other yes
+    if (cost == -1) {
+      //cost not calculated, so calculate it now
+      cost = f_shortest_path_cost(grid, cost_grid, next_cell, goal);
+      //update cost_grid to reflect cost for this cell
+      cost_grid[next_row][next_col] = cost;
+    }
+
+    //update min_cost if new cost is less
+    if (cost < min_cost) {
+      min_cost = cost;
     }
   }
+
+  //add +1 to count current cell
+  int cost_for_this_cell = min_cost + 1;
+  //update cost for this cell
+  cost_grid[cell_row][cell_col] = cost_for_this_cell;
+
+  return cost_for_this_cell;
+}
+
+vector<vector<int> > HBF::min_cost_from_cell(const vector<vector<int> > &grid,
+                                                 const vector<int> &start,
+                                                 const vector<int> &goal) {
+  //vector to hold zeros
+  vector<int> cols(grid[0].size(), -1);
+  //create a vector to hold shortest path cost for reach cell to goal
+  vector<vector<int> > cost_grid(grid.size(), cols);
+
+  //make a copy of grid to pass f_shortest_path_cost() function
+  //as it modifies it
+  auto grid_copy = grid;
+
+  cost_grid[start[0]][start[1]] = f_shortest_path_cost(grid_copy, cost_grid, start, goal);
+
+  return cost_grid;
+}
+
+vector<vector<int> > HBF::dynamic_programming_heuristic(const vector<vector<int> > &grid, const vector<int> &goal) {
+
+  //vector to hold zeros
+  vector<int> cols(grid[0].size(), -1);
+  //create a vector to hold shortest path cost for reach cell to goal
+  vector<vector<int> > cost_grid(grid.size(), cols);
+
+  //make a copy of grid to pass f_shortest_path_cost() function
+  //as it modifies it
+  auto grid_copy = grid;
+  for (int i = 0; i < grid.size(); ++i) {
+    for (int j = 0; j < grid[0].size(); ++j) {
+      //check for obstacle
+      if (grid[i][j] == 1) {
+        //it is obstacle, replace its cost with very high value
+        cost_grid[i][j] = 999999;
+        continue;
+      }
+
+      cost_grid[i][j] = f_shortest_path_cost(grid_copy, cost_grid, {i, j}, goal);
+    }
+  }
+
+  return cost_grid;
 }
 
 vector<HBF::maze_s> HBF::expand(HBF::maze_s state) {
@@ -209,8 +311,7 @@ bool HBF::is_valid_cell(double x2, double y2, const vector<vector<int> >& grid) 
 
 HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
                            vector<int> goal) {
-//  vector<vector<double> > heuristic = calculate_euclidean_heuristic(grid, goal);
-  vector<vector<vector<double> > > heuristic1 = calculate_euclidean_heuristic_3d(grid, goal);
+
   /*
    Working Implementation of breadth first search. Does NOT use a heuristic
    and as a result this is pretty inefficient. Try modifying this algorithm
@@ -234,6 +335,15 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
   state.g = g;
   state.x = start[0];
   state.y = start[1];
+
+  //  vector<vector<double> > heuristic = calculate_euclidean_heuristic(grid, goal);
+  //  vector<vector<vector<double> > > heuristic1 = calculate_euclidean_heuristic_3d(grid, goal);
+
+  //calculate heuristics
+  vector<vector<int>> cost_grid = min_cost_from_cell(grid, {idx(state.x), idx(state.y)}, goal);
+  printf("\nDP cost_grid: \n");
+  Utils::print_grid(cost_grid);
+
 
   //mark start node as closed and visited
   closed[stack][idx(state.x)][idx(state.y)] = state;
