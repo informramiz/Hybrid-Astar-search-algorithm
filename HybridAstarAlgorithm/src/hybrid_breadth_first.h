@@ -62,12 +62,6 @@ public:
 
   vector<maze_s> reconstruct_path(vector< vector< vector<maze_s> > > came_from, vector<double> start, HBF::maze_s final);
 
-private:
-  bool is_valid_cell(double x2, double y2,
-                     const vector<vector<int> >& grid);
-  bool is_valid_cell(const vector<vector<int> >& grid, const vector<int> &cell);
-  double deg2rad(double delta_i);
-
   vector<vector <double> > calculate_euclidean_heuristic(const vector<vector<int> > &grid, const vector<int> &goal);
 
   /**
@@ -89,6 +83,13 @@ private:
   vector<vector<int> > holonomic_min_cost_from_cell(const vector<vector<int> > &grid,
                                                               const vector<int> &start,
                                                               const vector<int> &goal);
+
+private:
+  bool is_valid_cell(double x2, double y2,
+                     const vector<vector<int> >& grid);
+  bool is_valid_cell(const vector<vector<int> >& grid, const vector<int> &cell);
+  double deg2rad(double delta_i);
+
   /**
    * Returns cost for shortest path from given cell to goal.
    * @out cost_grid will contain the cost for each cell visited.
