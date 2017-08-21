@@ -77,6 +77,11 @@ private:
    */
   vector<vector<vector<double> > > calculate_euclidean_heuristic_3d(const vector<vector<int> > &grid, const vector<int> &goal);
 
+  /**
+   * Returns the next cell after making given move from current cell
+   */
+  vector<int> move(const vector<int> &current_cell, const vector<int> &move);
+
   vector<vector<int> > holomonic_moves_ = {
       {-1, 0}, //go up
       {1, 0}, //go down

@@ -99,6 +99,16 @@ vector<vector<vector<double> > > HBF::calculate_euclidean_heuristic_3d(const vec
   return dist_grid;
 }
 
+vector<int> HBF::move(const vector<int> &current_cell, const vector<int> &move) {
+  vector<int> new_cell(current_cell.size());
+
+  for(int i = 0; i < current_cell.size(); ++i) {
+    new_cell[i] = current_cell[i] + move[i];
+  }
+
+  return new_cell;
+}
+
 vector<int> move_left(const vector<int> &current_cell) {
   vector<int> left_cell(current_cell.size());
   //row remains same
