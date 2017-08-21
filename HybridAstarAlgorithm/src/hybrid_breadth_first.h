@@ -65,6 +65,7 @@ public:
 private:
   bool is_valid_cell(double x2, double y2,
                      const vector<vector<int> >& grid);
+  bool is_valid_cell(const vector<vector<int> >& grid, const vector<int> &cell);
   double deg2rad(double delta_i);
 
   vector<vector <double> > calculate_euclidean_heuristic(const vector<vector<int> > &grid, const vector<int> &goal);

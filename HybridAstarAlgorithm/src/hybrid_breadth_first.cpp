@@ -199,6 +199,10 @@ vector<HBF::maze_s> HBF::reconstruct_path(
 
 }
 
+bool HBF::is_valid_cell(const vector<vector<int> >& grid, const vector<int> &cell) {
+  return is_valid_cell(cell[0], cell[1], grid);
+}
+
 bool HBF::is_valid_cell(double x2, double y2, const vector<vector<int> >& grid) {
   return (x2 >= 0 && x2 < grid.size()) && (y2 >= 0 && y2 < grid[0].size());
 }
