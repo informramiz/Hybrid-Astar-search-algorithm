@@ -81,19 +81,19 @@ private:
   /**
    * ---Holonomic with obstacles heuristic, calculated using dynamic programming---
    */
-  vector<vector<int> > dynamic_programming_heuristic(const vector<vector<int> > &grid, const vector<int> &goal);
+  vector<vector<int> > holonomic_min_path_cost_from_each_cell_heuristic(const vector<vector<int> > &grid, const vector<int> &goal);
   /**
    * Returns cost for shortest path from given cell to goal.
    * This is just a wrapper on top of f_shortest_path_cost() method
    */
-  vector<vector<int> > min_cost_from_cell(const vector<vector<int> > &grid,
+  vector<vector<int> > holonomic_min_cost_from_cell(const vector<vector<int> > &grid,
                                                               const vector<int> &start,
                                                               const vector<int> &goal);
   /**
    * Returns cost for shortest path from given cell to goal.
    * @out cost_grid will contain the cost for each cell visited.
    */
-  int f_shortest_path_cost(vector<vector<int> > &grid,
+  int holonomic_f_shortest_path_cost(vector<vector<int> > &grid,
                            vector<vector<int> > &cost_grid,
                            const vector<int> &cell,
                            const vector<int> &goal);

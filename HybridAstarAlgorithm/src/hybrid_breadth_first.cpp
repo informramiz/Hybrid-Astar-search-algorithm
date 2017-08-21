@@ -109,7 +109,7 @@ vector<int> HBF::move(const vector<int> &current_cell, const vector<int> &move) 
   return new_cell;
 }
 
-int HBF::f_shortest_path_cost(vector<vector<int> > &grid,
+int HBF::holonomic_f_shortest_path_cost(vector<vector<int> > &grid,
                               vector<vector<int> > &cost_grid,
                               const vector<int> &cell,
                               const vector<int> &goal) {
@@ -167,7 +167,7 @@ int HBF::f_shortest_path_cost(vector<vector<int> > &grid,
     //if cost is -1 then it means cost has not been calculated other yes
     if (cost == -1) {
       //cost not calculated, so calculate it now
-      cost = f_shortest_path_cost(grid, cost_grid, next_cell, goal);
+      cost = holonomic_f_shortest_path_cost(grid, cost_grid, next_cell, goal);
       //update cost_grid to reflect cost for this cell
       cost_grid[next_row][next_col] = cost;
     }
@@ -186,7 +186,7 @@ int HBF::f_shortest_path_cost(vector<vector<int> > &grid,
   return cost_for_this_cell;
 }
 
-vector<vector<int> > HBF::min_cost_from_cell(const vector<vector<int> > &grid,
+vector<vector<int> > HBF::holonomic_min_cost_from_cell(const vector<vector<int> > &grid,
                                                  const vector<int> &start,
                                                  const vector<int> &goal) {
   //vector to hold zeros
@@ -198,12 +198,12 @@ vector<vector<int> > HBF::min_cost_from_cell(const vector<vector<int> > &grid,
   //as it modifies it
   auto grid_copy = grid;
 
-  cost_grid[start[0]][start[1]] = f_shortest_path_cost(grid_copy, cost_grid, start, goal);
+  cost_grid[start[0]][start[1]] = holonomic_f_shortest_path_cost(grid_copy, cost_grid, start, goal);
 
   return cost_grid;
 }
 
-vector<vector<int> > HBF::dynamic_programming_heuristic(const vector<vector<int> > &grid, const vector<int> &goal) {
+vector<vector<int> > HBF::holonomic_min_path_cost_from_each_cell_heuristic(const vector<vector<int> > &grid, const vector<int> &goal) {
 
   //vector to hold zeros
   vector<int> cols(grid[0].size(), -1);
@@ -222,7 +222,7 @@ vector<vector<int> > HBF::dynamic_programming_heuristic(const vector<vector<int>
         continue;
       }
 
-      cost_grid[i][j] = f_shortest_path_cost(grid_copy, cost_grid, {i, j}, goal);
+      cost_grid[i][j] = holonomic_f_shortest_path_cost(grid_copy, cost_grid, {i, j}, goal);
     }
   }
 
@@ -340,7 +340,7 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
   //  vector<vector<vector<double> > > heuristic1 = calculate_euclidean_heuristic_3d(grid, goal);
 
   //calculate heuristics
-  vector<vector<int>> cost_grid = min_cost_from_cell(grid, {idx(state.x), idx(state.y)}, goal);
+  vector<vector<int>> cost_grid = holonomic_min_cost_from_cell(grid, {idx(state.x), idx(state.y)}, goal);
   printf("\nDP cost_grid: \n");
   Utils::print_grid(cost_grid);
 
