@@ -11,6 +11,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <string>
 #include <math.h>
 #include <vector>
 
@@ -81,6 +82,8 @@ private:
       {0, 1}, //go left
       {0, -1}, //go right
   };
+
+  vector<string> holomonic_moves_names = {"Up", "Down", "Left", "Right"};
 };
 
 #endif /* HYBRID_BREADTH_FIRST_H_ */
