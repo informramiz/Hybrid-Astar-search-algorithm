@@ -34,7 +34,7 @@ int HBF::theta_to_stack_number(double theta) {
 
   double new_theta = fmod((theta + 2 * M_PI), (2 * M_PI));
   int stack_number = (int) (round(new_theta * NUM_THETA_CELLS / (2 * M_PI)))
-                              % NUM_THETA_CELLS;
+      % NUM_THETA_CELLS;
   return stack_number;
 }
 
@@ -51,15 +51,18 @@ double HBF::deg2rad(double delta_i) {
   return M_PI / 180.0 * delta_i;
 }
 
-vector<vector<double> > HBF::calculate_euclidean_heuristic(const vector<vector<int> > &grid, const vector<int> &goal) {
+vector<vector<double> > HBF::calculate_euclidean_heuristic(
+    const vector<vector<int> > &grid, const vector<int> &goal) {
   int goal_x = goal[0];
   int goal_y = goal[1];
 
-  vector<vector<double> > dist_grid(grid[0].size(), vector<double>(grid.size()));
+  vector<vector<double> > dist_grid(grid[0].size(),
+      vector<double>(grid.size()));
 
   for (int i = 0; i < grid.size(); ++i) {
     for (int j = 0; j < grid[0].size(); ++j) {
-      dist_grid[i][j] = Utils::euclidean(goal_x, goal_y, i, j);;
+      dist_grid[i][j] = Utils::euclidean(goal_x, goal_y, i, j);
+      ;
     }
   }
 
@@ -68,26 +71,28 @@ vector<vector<double> > HBF::calculate_euclidean_heuristic(const vector<vector<i
   return dist_grid;
 }
 
-
 /**
  * ---- Non-holonomic without obstacles heuristic-----
  *
  * Calculates 3D (x, y, theta) grid of heuristic using euclidean distance. This heuristic can be used to achieve
  * goal in desired heading (theta)
  */
-vector<vector<vector<double> > > HBF::calculate_euclidean_heuristic_3d(const vector<vector<int> > &grid, const vector<int> &goal) {
+vector<vector<vector<double> > > HBF::calculate_euclidean_heuristic_3d(
+    const vector<vector<int> > &grid, const vector<int> &goal) {
   int goal_x = goal[0];
   int goal_y = goal[1];
   double goal_theta = goal[2];
 
-  vector<vector<vector<double> > > dist_grid(NUM_THETA_CELLS, vector<vector<double> >(grid[0].size(), vector<double>(grid.size())));
+  vector<vector<vector<double> > > dist_grid(NUM_THETA_CELLS,
+      vector<vector<double> >(grid[0].size(), vector<double>(grid.size())));
 
   for (int i = 0; i < grid.size(); ++i) {
     for (int j = 0; j < grid[0].size(); ++j) {
       for (int theta = -35; theta < 40; theta += 5) {
         double theta_rad = deg2rad(theta);
         int theta_stack_number = theta_to_stack_number(theta_rad);
-        dist_grid[theta_stack_number][j][i] = Utils::euclidean_3d(goal_x, goal_y, goal_theta, j, i, theta_rad);
+        dist_grid[theta_stack_number][j][i] = Utils::euclidean_3d(goal_x,
+            goal_y, goal_theta, j, i, theta_rad);
       }
     }
   }
@@ -99,10 +104,11 @@ vector<vector<vector<double> > > HBF::calculate_euclidean_heuristic_3d(const vec
   return dist_grid;
 }
 
-vector<int> HBF::move(const vector<int> &current_cell, const vector<int> &move) {
+vector<int> HBF::move(const vector<int> &current_cell,
+                      const vector<int> &move) {
   vector<int> new_cell(current_cell.size());
 
-  for(int i = 0; i < current_cell.size(); ++i) {
+  for (int i = 0; i < current_cell.size(); ++i) {
     new_cell[i] = current_cell[i] + move[i];
   }
 
@@ -110,9 +116,9 @@ vector<int> HBF::move(const vector<int> &current_cell, const vector<int> &move) 
 }
 
 int HBF::holonomic_f_shortest_path_cost(vector<vector<int> > &grid,
-                              vector<vector<int> > &cost_grid,
-                              const vector<int> &cell,
-                              const vector<int> &goal) {
+                                        vector<vector<int> > &cost_grid,
+                                        const vector<int> &cell,
+                                        const vector<int> &goal) {
   //handle base case
   if (cell == goal) {
     //passed cell is actually goal cell so no cost incurred
@@ -186,9 +192,9 @@ int HBF::holonomic_f_shortest_path_cost(vector<vector<int> > &grid,
   return cost_for_this_cell;
 }
 
-vector<vector<int> > HBF::holonomic_min_cost_from_cell(const vector<vector<int> > &grid,
-                                                 const vector<int> &start,
-                                                 const vector<int> &goal) {
+vector<vector<int> > HBF::holonomic_min_cost_from_cell(
+    const vector<vector<int> > &grid, const vector<int> &start,
+    const vector<int> &goal) {
   //vector to hold zeros
   vector<int> cols(grid[0].size(), -1);
   //create a vector to hold shortest path cost for reach cell to goal
@@ -198,12 +204,14 @@ vector<vector<int> > HBF::holonomic_min_cost_from_cell(const vector<vector<int> 
   //as it modifies it
   auto grid_copy = grid;
 
-  cost_grid[start[0]][start[1]] = holonomic_f_shortest_path_cost(grid_copy, cost_grid, start, goal);
+  cost_grid[start[0]][start[1]] = holonomic_f_shortest_path_cost(grid_copy,
+      cost_grid, start, goal);
 
   return cost_grid;
 }
 
-vector<vector<int> > HBF::holonomic_min_path_cost_from_each_cell_heuristic(const vector<vector<int> > &grid, const vector<int> &goal) {
+vector<vector<int> > HBF::holonomic_min_path_cost_from_each_cell_heuristic(
+    const vector<vector<int> > &grid, const vector<int> &goal) {
 
   //vector to hold zeros
   vector<int> cols(grid[0].size(), -1);
@@ -222,7 +230,8 @@ vector<vector<int> > HBF::holonomic_min_path_cost_from_each_cell_heuristic(const
         continue;
       }
 
-      cost_grid[i][j] = holonomic_f_shortest_path_cost(grid_copy, cost_grid, {i, j}, goal);
+      cost_grid[i][j] = holonomic_f_shortest_path_cost(grid_copy, cost_grid, {
+          i, j }, goal);
     }
   }
 
@@ -301,11 +310,13 @@ vector<HBF::maze_s> HBF::reconstruct_path(
 
 }
 
-bool HBF::is_valid_cell(const vector<vector<int> >& grid, const vector<int> &cell) {
+bool HBF::is_valid_cell(const vector<vector<int> >& grid,
+                        const vector<int> &cell) {
   return is_valid_cell(cell[0], cell[1], grid);
 }
 
-bool HBF::is_valid_cell(double x2, double y2, const vector<vector<int> >& grid) {
+bool HBF::is_valid_cell(double x2, double y2,
+                        const vector<vector<int> >& grid) {
   return (x2 >= 0 && x2 < grid.size()) && (y2 >= 0 && y2 < grid[0].size());
 }
 
@@ -340,10 +351,10 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
   //  vector<vector<vector<double> > > heuristic1 = calculate_euclidean_heuristic_3d(grid, goal);
 
   //calculate heuristics
-  vector<vector<int>> cost_grid = holonomic_min_cost_from_cell(grid, {idx(state.x), idx(state.y)}, goal);
+  vector<vector<int>> cost_grid = holonomic_min_cost_from_cell(grid,
+      { idx(state.x), idx(state.y) }, goal);
   printf("\nDP cost_grid: \n");
   Utils::print_grid(cost_grid);
-
 
   //mark start node as closed and visited
   closed[stack][idx(state.x)][idx(state.y)] = state;
