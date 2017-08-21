@@ -60,15 +60,13 @@ public:
   maze_path search(vector< vector<int> > grid, vector<double> start, vector<int> goal);
 
   vector<maze_s> reconstruct_path(vector< vector< vector<maze_s> > > came_from, vector<double> start, HBF::maze_s final);
-  template<class T>
-  void print_grid(const vector<vector<T> > &grid);
+
 private:
   bool is_valid_cell(double x2, double y2,
                      const vector<vector<int> >& grid);
   double deg2rad(double delta_i);
 
   vector<vector <double> > calculate_euclidean_heuristic(const vector<vector<int> > &grid, const vector<int> &goal);
-  double euclidean(int x1, int y1, int x2, int y2);
 
   /**
    * ---- Non-holonomic without obstacles heuristic-----
@@ -77,7 +75,6 @@ private:
    * goal in desired heading (theta)
    */
   vector<vector<vector<double> > > calculate_euclidean_heuristic_3d(const vector<vector<int> > &grid, const vector<int> &goal);
-  double euclidean_3d(int x1, int y1, double theta_rad1, int x2, int y2, double theta_rad2);
 };
 
 #endif /* HYBRID_BREADTH_FIRST_H_ */

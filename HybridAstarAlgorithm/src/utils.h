@@ -50,6 +50,16 @@ public:
 
     cout << endl;
   }
+
+  /**
+   * Calculates Euclidean distance
+   */
+  static double euclidean(int x1, int y1, int x2, int y2);
+
+  /**
+   * Calculates Euclidean distance in 3D
+   */
+  static double euclidean_3d(int x1, int y1, double theta_rad1, int x2, int y2, double theta_rad2);
 };
 
 #endif /* UTILS_H_ */

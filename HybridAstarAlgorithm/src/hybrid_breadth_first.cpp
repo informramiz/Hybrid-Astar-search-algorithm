@@ -59,7 +59,7 @@ vector<vector<double> > HBF::calculate_euclidean_heuristic(const vector<vector<i
 
   for (int i = 0; i < grid.size(); ++i) {
     for (int j = 0; j < grid[0].size(); ++j) {
-      dist_grid[i][j] = euclidean(goal_x, goal_y, i, j);;
+      dist_grid[i][j] = Utils::euclidean(goal_x, goal_y, i, j);;
     }
   }
 
@@ -68,19 +68,6 @@ vector<vector<double> > HBF::calculate_euclidean_heuristic(const vector<vector<i
   return dist_grid;
 }
 
-double HBF::euclidean(int x1, int y1, int x2, int y2) {
-  //  int dist_x = abs(x1 - x2);
-  //  int dist_y =  abs(y1 - y2);
-  //  int dist = dist_x + dist_y;
-  //
-  //  return dist;
-
-  int dist_x = (x1 - x2);
-  int dist_y =  (y1 - y2);
-  int squared_dist = pow(dist_x, 2) + pow(dist_y, 2);
-
-  return sqrt(squared_dist);
-}
 
 /**
  * ---- Non-holonomic without obstacles heuristic-----
@@ -100,7 +87,7 @@ vector<vector<vector<double> > > HBF::calculate_euclidean_heuristic_3d(const vec
       for (int theta = -35; theta < 40; theta += 5) {
         double theta_rad = deg2rad(theta);
         int theta_stack_number = theta_to_stack_number(theta_rad);
-        dist_grid[theta_stack_number][j][i] = euclidean_3d(goal_x, goal_y, goal_theta, j, i, theta_rad);
+        dist_grid[theta_stack_number][j][i] = Utils::euclidean_3d(goal_x, goal_y, goal_theta, j, i, theta_rad);
       }
     }
   }
@@ -158,15 +145,6 @@ vector<vector<double> > HBF::dynamic_programming_heuristic(const vector<vector<i
       //      dynamic_programming_recursive()
     }
   }
-}
-
-double HBF::euclidean_3d(int x1, int y1, double theta_rad1, int x2, int y2, double theta_rad2) {
-  int dist_x = (x1 - x2);
-  int dist_y =  (y1 - y2);
-  double dist_theta = (theta_rad1 - theta_rad2);
-  double squared_dist = pow(dist_x, 2) + pow(dist_y, 2) + pow(dist_theta, 2);
-
-  return sqrt(squared_dist);
 }
 
 vector<HBF::maze_s> HBF::expand(HBF::maze_s state) {
