@@ -40,5 +40,10 @@ double Utils::euclidean_3d(int x1, int y1, double theta_rad1, int x2, int y2, do
   return sqrt(squared_dist);
 }
 
+double Utils::deg2rad(double delta_i) {
+  return M_PI / 180.0 * delta_i;
+}
+
+
 
 

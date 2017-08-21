@@ -47,10 +47,6 @@ int HBF::idx(double float_num) {
   return int(floor(float_num));
 }
 
-double HBF::deg2rad(double delta_i) {
-  return M_PI / 180.0 * delta_i;
-}
-
 vector<vector<double> > HBF::calculate_euclidean_heuristic(
     const vector<vector<int> > &grid, const vector<int> &goal) {
   int goal_x = goal[0];
@@ -89,7 +85,7 @@ vector<vector<vector<double> > > HBF::calculate_euclidean_heuristic_3d(
   for (int i = 0; i < grid.size(); ++i) {
     for (int j = 0; j < grid[0].size(); ++j) {
       for (int theta = -35; theta < 40; theta += 5) {
-        double theta_rad = deg2rad(theta);
+        double theta_rad = Utils::deg2rad(theta);
         int theta_stack_number = theta_to_stack_number(theta_rad);
         dist_grid[theta_stack_number][j][i] = Utils::euclidean_3d(goal_x,
             goal_y, goal_theta, j, i, theta_rad);
@@ -255,7 +251,7 @@ vector<HBF::maze_s> HBF::expand(HBF::maze_s state) {
   for (double delta_i = -35; delta_i < 40; delta_i += 5) {
 
     //convert from degree to radian
-    double delta = deg2rad(delta_i);
+    double delta = Utils::deg2rad(delta_i);
     //calculate rate of change of heading using formula: w = v/L * tan(delta)
     double omega = SPEED / LENGTH * tan(delta);
 

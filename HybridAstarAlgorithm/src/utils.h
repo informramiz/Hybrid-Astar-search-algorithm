@@ -60,6 +60,11 @@ public:
    * Calculates Euclidean distance in 3D
    */
   static double euclidean_3d(int x1, int y1, double theta_rad1, int x2, int y2, double theta_rad2);
+
+  /**
+   * Converts angle from degree to radians
+   */
+  static double deg2rad(double delta_i);
 };
 
 #endif /* UTILS_H_ */
