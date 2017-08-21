@@ -75,6 +75,12 @@ private:
    * goal in desired heading (theta)
    */
   vector<vector<vector<double> > > calculate_euclidean_heuristic_3d(const vector<vector<int> > &grid, const vector<int> &goal);
+  vector<vector<int> > holomonic_moves = {
+      {-1, 0}, //go up
+      {1, 0}, //go down
+      {0, 1}, //go left
+      {0, -1}, //go right
+  };
 };
 
 #endif /* HYBRID_BREADTH_FIRST_H_ */
