@@ -114,10 +114,16 @@ private:
 
   vector<string> holomonic_moves_names_ = { "Up", "Down", "Left", "Right" };
 
+  //define indexes for above moves for easy access
   const int MOVE_UP_INDEX = 0;
   const int MOVE_DOWN_INDEX = 1;
   const int MOVE_LEFT_INDEX = 2;
   const int MOVE_RIGHT_INDEX = 3;
+
+  /**
+   * Cost for an obstacle
+   */
+  const int COST_FOR_OBSTACLE = 999999;
 };
 
 #endif /* HYBRID_BREADTH_FIRST_H_ */

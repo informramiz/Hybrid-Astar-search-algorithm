@@ -137,14 +137,14 @@ int HBF::holonomic_f_shortest_path_cost(vector<vector<int> > &grid,
   //handle obstacle
   if (grid[cell_row][cell_col] == 1) {
     //assign it maximum cost
-    return 999999;
+    return COST_FOR_OBSTACLE;
   }
 
   //mark this cell as visited
   grid[cell_row][cell_col] = 1;
 
   //initialize with a very high value
-  int min_cost = 999999;
+  int min_cost = COST_FOR_OBSTACLE;
 
   //perform each valid move and pick the minimum cost from all moves
   for (int i = 0; i < holomonic_moves_.size(); ++i) {
@@ -162,7 +162,7 @@ int HBF::holonomic_f_shortest_path_cost(vector<vector<int> > &grid,
     //check if this next cell is an obstacle
     if (grid[next_row][next_col] == 1) {
       //assign maximum cost to it
-      cost_grid[next_row][next_col] = 999999;
+      cost_grid[next_row][next_col] = COST_FOR_OBSTACLE;
       //as it is obstacle, ignore this move
       continue;
     }
@@ -226,7 +226,7 @@ vector<vector<int> > HBF::holonomic_min_path_cost_from_each_cell_heuristic(
       //check for obstacle
       if (grid[i][j] == 1) {
         //it is obstacle, replace its cost with very high value
-        cost_grid[i][j] = 999999;
+        cost_grid[i][j] = COST_FOR_OBSTACLE;
         continue;
       }
 
