@@ -103,7 +103,7 @@ private:
   /**
    * Returns the next cell after making given move from current cell
    */
-  vector<int> move(const vector<int> &current_cell, const vector<int> &move);
+  vector<int> make_move(const vector<int> &current_cell, const vector<int> &move);
 
   vector<vector<int> > holomonic_moves_ = { { -1, 0 }, //go up
       { 1, 0 }, //go down

@@ -100,7 +100,7 @@ vector<vector<vector<double> > > HBF::calculate_euclidean_heuristic_3d(
   return dist_grid;
 }
 
-vector<int> HBF::move(const vector<int> &current_cell,
+vector<int> HBF::make_move(const vector<int> &current_cell,
                       const vector<int> &move) {
   vector<int> new_cell(current_cell.size());
 
@@ -145,7 +145,7 @@ int HBF::holonomic_f_shortest_path_cost(vector<vector<int> > &grid,
   //perform each valid move and pick the minimum cost from all moves
   for (int i = 0; i < holomonic_moves_.size(); ++i) {
     //make a move
-    vector<int> next_cell = move(cell, holomonic_moves_[i]);
+    vector<int> next_cell = make_move(cell, holomonic_moves_[i]);
     int next_row = next_cell[0];
     int next_col = next_cell[1];
 
