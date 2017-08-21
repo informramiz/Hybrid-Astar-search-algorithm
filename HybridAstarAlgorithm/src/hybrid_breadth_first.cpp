@@ -50,7 +50,8 @@ double HBF::deg2rad(double delta_i) {
   return M_PI / 180.0 * delta_i;
 }
 
-void HBF::print_grid(const vector<vector<double> > &grid) {
+template<class T>
+void HBF::print_grid(const vector<vector<T> > &grid) {
   for(int i = 0; i < grid.size(); i++)
   {
     cout << grid[i][0];

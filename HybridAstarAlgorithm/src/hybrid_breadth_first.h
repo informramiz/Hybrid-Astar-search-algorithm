@@ -60,7 +60,8 @@ public:
   maze_path search(vector< vector<int> > grid, vector<double> start, vector<int> goal);
 
   vector<maze_s> reconstruct_path(vector< vector< vector<maze_s> > > came_from, vector<double> start, HBF::maze_s final);
-  void print_grid(const vector<vector<double> > &grid);
+  template<class T>
+  void print_grid(const vector<vector<T> > &grid);
 private:
   bool is_valid_cell(double x2, double y2,
                      const vector<vector<int> >& grid);
