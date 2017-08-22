@@ -343,15 +343,6 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
   state.x = start[0];
   state.y = start[1];
 
-  //  vector<vector<double> > heuristic = calculate_euclidean_heuristic(grid, goal);
-  //  vector<vector<vector<double> > > heuristic1 = calculate_euclidean_heuristic_3d(grid, goal);
-
-  //calculate heuristics
-  vector<vector<int>> cost_grid = holonomic_min_cost_from_cell(grid,
-      { idx(state.x), idx(state.y) }, goal);
-  printf("\nDP cost_grid: \n");
-  Utils::print_grid(cost_grid);
-
   //mark start node as closed and visited
   closed[stack][idx(state.x)][idx(state.y)] = state;
   closed_value[stack][idx(state.x)][idx(state.y)] = 1;
