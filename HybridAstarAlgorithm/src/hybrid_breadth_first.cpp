@@ -448,7 +448,6 @@ HBF::maze_path HBF::search_with_holomonic_with_obstacles_heuristic(vector<vector
   vector<vector<vector<maze_s> > > came_from(NUM_THETA_CELLS,
       vector<vector<maze_s>>(grid[0].size(), vector<maze_s>(grid.size())));
 
-  printf("rows, cols: %d, %d\n", closed[0].size(), closed[0][0].size());
   //initial values
   double theta = start[2];
   int stack = theta_to_stack_number(theta);
@@ -466,8 +465,9 @@ HBF::maze_path HBF::search_with_holomonic_with_obstacles_heuristic(vector<vector
   //calculate holomonic with obstacles heuristics using dynamic programming
   vector<vector<int>> cost_grid = holonomic_min_cost_from_cell(grid,
       { idx(state.x), idx(state.y) }, goal);
-  printf("\nDP cost_grid: \n");
+  printf("\nHolonomic-with-Obstacles cost_grid: \n");
   Utils::print_grid(cost_grid);
+  cout << endl << endl;
 
   //mark start node as closed and visited
   closed[stack][idx(state.x)][idx(state.y)] = state;
