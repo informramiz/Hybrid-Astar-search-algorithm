@@ -52,13 +52,12 @@ vector<vector<double> > HBF::calculate_euclidean_heuristic(
   int goal_x = goal[0];
   int goal_y = goal[1];
 
-  vector<vector<double> > dist_grid(grid[0].size(),
-      vector<double>(grid.size()));
+  vector<vector<double> > dist_grid(grid.size(),
+      vector<double>(grid[0].size()));
 
   for (int i = 0; i < grid.size(); ++i) {
     for (int j = 0; j < grid[0].size(); ++j) {
       dist_grid[i][j] = Utils::euclidean(goal_x, goal_y, i, j);
-      ;
     }
   }
 
@@ -80,15 +79,15 @@ vector<vector<vector<double> > > HBF::calculate_euclidean_heuristic_3d(
   double goal_theta = goal[2];
 
   vector<vector<vector<double> > > dist_grid(NUM_THETA_CELLS,
-      vector<vector<double> >(grid[0].size(), vector<double>(grid.size())));
+      vector<vector<double> >(grid.size(), vector<double>(grid[0].size())));
 
   for (int i = 0; i < grid.size(); ++i) {
     for (int j = 0; j < grid[0].size(); ++j) {
       for (int theta = -35; theta < 40; theta += 5) {
         double theta_rad = Utils::deg2rad(theta);
         int theta_stack_number = theta_to_stack_number(theta_rad);
-        dist_grid[theta_stack_number][j][i] = Utils::euclidean_3d(goal_x,
-            goal_y, goal_theta, j, i, theta_rad);
+        dist_grid[theta_stack_number][i][j] = Utils::euclidean_3d(goal_x,
+            goal_y, goal_theta, i, j, theta_rad);
       }
     }
   }
