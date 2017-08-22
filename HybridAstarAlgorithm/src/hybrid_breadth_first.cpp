@@ -505,7 +505,8 @@ HBF::maze_path HBF::search_optimized(vector<vector<int> > grid, vector<double> s
 
     //validate each next state and pick valid state with min f_value
 
-    //Assign a very high value initially and make sure there is not maximum value than this one
+    //Assign a very high value initially and make sure
+    //there is no other maximum possible f_value than this one
     int min_f_value = this->COST_FOR_OBSTACLE + grid.size() * grid[0].size();
     //assign an invalid index initially
     int min_state_index = -1;
