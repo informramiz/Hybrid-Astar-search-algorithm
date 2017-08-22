@@ -463,7 +463,7 @@ HBF::maze_path HBF::search_optimized(vector<vector<int> > grid, vector<double> s
   //  vector<vector<double> > heuristic = calculate_euclidean_heuristic(grid, goal);
   //  vector<vector<vector<double> > > heuristic1 = calculate_euclidean_heuristic_3d(grid, goal);
 
-  //calculate heuristics
+  //calculate holomonic with obstacles heuristics using dynamic programming
   vector<vector<int>> cost_grid = holonomic_min_cost_from_cell(grid,
       { idx(state.x), idx(state.y) }, goal);
   printf("\nDP cost_grid: \n");
@@ -498,58 +498,79 @@ HBF::maze_path HBF::search_optimized(vector<vector<int> > grid, vector<double> s
       return path;
 
     }
-    //get all possible (valid and invalid) next states from current state
+    //get all possible (valid and invalid, and not closed) next states from current state
     //using steering angle from max-left to max-right and
     //equations of motion to predict (x, y, theta)
-    vector<maze_s> next_state = expand(next);
+    vector<maze_s> next_states = expand(next);
 
-    //validate each next state before adding them to open set and
-    //marking them closed
-    for (int i = 0; i < next_state.size(); i++) {
-      //define short alias for ease
-      int g2 = next_state[i].g;
-      double x2 = next_state[i].x;
-      double y2 = next_state[i].y;
-      double theta2 = next_state[i].theta;
+    //validate each next state and pick valid state with min f_value
+
+    //Assign a very high value initially and make sure there is not maximum value than this one
+    int min_f_value = this->COST_FOR_OBSTACLE + grid.size() * grid[0].size();
+    //assign an invalid index initially
+    int min_state_index = -1;
+
+    for (int i = 1; i < next_states.size(); i++) {
+      //define short aliases for ease
+      int next_state_g = next_states[i].g;
+      double next_state_x = next_states[i].x;
+      double next_state_y = next_states[i].y;
+      double next_state_theta = next_states[i].theta;
 
       //check for cell validity
-      if (!is_valid_cell(x2, y2, grid)) {
-        //invalid cell
+      if (!is_valid_cell(next_state_x, next_state_y, grid)) {
+        //invalid cell, ignore this state
         continue;
       }
 
       //get a valid 3D grid index given theta which is double
-      int stack2 = theta_to_stack_number(theta2);
+      int stack2 = theta_to_stack_number(next_state_theta);
 
       //check if
       //1. this cell is not in open cells list,
       // OR
       //2. is an obstacle
-      if (closed_value[stack2][idx(x2)][idx(y2)] == 1
-          || grid[idx(x2)][idx(y2)] == 1) {
+      if (closed_value[stack2][idx(next_state_x)][idx(next_state_y)] == 1
+          || grid[idx(next_state_x)][idx(next_state_y)] == 1) {
         continue;
       }
 
-      //cell is not marked (open) and not an obstacle
-      //so add it to open cells list
-      maze_s state2;
-      state2.g = g2;
-      state2.x = x2;
-      state2.y = y2;
-      state2.theta = theta2;
+      //calculate f_value for this state which is: g + min_path_cost from this state to goal
+      int next_state_f_value = next_state_g + cost_grid[idx(next_state_x)][idx(next_state_y)];
 
-      opened.push_back(state2);
-
-      //mark this cell
-      closed[stack2][idx(x2)][idx(y2)] = next_state[i];
-      closed_value[stack2][idx(x2)][idx(y2)] = 1;
-      came_from[stack2][idx(x2)][idx(y2)] = next;
-
-      //increment closed cells count
-      total_closed += 1;
+      //if f_value for current state is less than mark this state as min
+      if (next_state_f_value < min_f_value) {
+        min_f_value = next_state_f_value;
+        min_state_index = i;
+      }
     }
 
+    //check if we were not able to find any valid next state
+    if (min_state_index == -1) {
+      //no valid next state, ignore path from current state
+      continue;
+    }
+
+    //we were able to find a state with min f_value
+    //add this state to open set of next possible states
+    maze_s min_state = next_states[min_state_index];
+    opened.push_back(min_state);
+
+    //get a valid 3D grid index given theta which is double
+    int min_state_theta_stack = theta_to_stack_number(min_state.theta);
+
+    //mark this cell/state as closed
+    closed[min_state_theta_stack][idx(min_state.x)][idx(min_state.y)] = min_state;
+    closed_value[min_state_theta_stack][idx(min_state.x)][idx(min_state.y)] = 1;
+
+    //add the cell from which this min_state was found as came_from cell
+    came_from[min_state_theta_stack][idx(min_state.x)][idx(min_state.y)] = next;
+
+    //increment closed cells count
+    total_closed += 1;
   }
+
+  //loop is finished that means we were not able to find any valid path
   cout << "no valid path." << endl;
   HBF::maze_path path;
   path.closed = closed;
