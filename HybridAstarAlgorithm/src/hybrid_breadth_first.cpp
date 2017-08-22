@@ -442,3 +442,130 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
 
 }
 
+HBF::maze_path HBF::search_optimized(vector<vector<int> > grid, vector<double> start,
+                           vector<int> goal) {
+
+  /*
+   Working Implementation of breadth first search. Does NOT use a heuristic
+   and as a result this is pretty inefficient. Try modifying this algorithm
+   into hybrid A* by adding heuristics appropriately.
+   */
+
+  vector<vector<vector<maze_s> > > closed(NUM_THETA_CELLS,
+      vector<vector<maze_s>>(grid[0].size(), vector<maze_s>(grid.size())));
+  vector<vector<vector<int> > > closed_value(NUM_THETA_CELLS,
+      vector<vector<int>>(grid[0].size(), vector<int>(grid.size())));
+  vector<vector<vector<maze_s> > > came_from(NUM_THETA_CELLS,
+      vector<vector<maze_s>>(grid[0].size(), vector<maze_s>(grid.size())));
+
+  //initial values
+  double theta = start[2];
+  int stack = theta_to_stack_number(theta);
+  int g = 0;
+
+  //update start node
+  maze_s state;
+  state.g = g;
+  state.x = start[0];
+  state.y = start[1];
+
+  //  vector<vector<double> > heuristic = calculate_euclidean_heuristic(grid, goal);
+  //  vector<vector<vector<double> > > heuristic1 = calculate_euclidean_heuristic_3d(grid, goal);
+
+  //calculate heuristics
+  vector<vector<int>> cost_grid = holonomic_min_cost_from_cell(grid,
+      { idx(state.x), idx(state.y) }, goal);
+  printf("\nDP cost_grid: \n");
+  Utils::print_grid(cost_grid);
+
+  //mark start node as closed and visited
+  closed[stack][idx(state.x)][idx(state.y)] = state;
+  closed_value[stack][idx(state.x)][idx(state.y)] = 1;
+  came_from[stack][idx(state.x)][idx(state.y)] = state;
+
+  //we want to keep a count of total nodes closed/checked
+  int total_closed = 1;
+
+  //initialize list of valid next states/configs as there can be
+  //invalid configs as well (that lead to obstacles or out of grid or high cost)
+  vector<maze_s> opened = { state };
+
+  while (!opened.empty()) {
+
+    maze_s next = opened[0]; //grab first elment
+    opened.erase(opened.begin()); //pop first element
+
+    int x = next.x;
+    int y = next.y;
+
+    if (idx(x) == goal[0] && idx(y) == goal[1]) {
+      cout << "found path to goal in " << total_closed << " expansions" << endl;
+      maze_path path;
+      path.closed = closed;
+      path.came_from = came_from;
+      path.final = next;
+      return path;
+
+    }
+    //get all possible (valid and invalid) next states from current state
+    //using steering angle from max-left to max-right and
+    //equations of motion to predict (x, y, theta)
+    vector<maze_s> next_state = expand(next);
+
+    //validate each next state before adding them to open set and
+    //marking them closed
+    for (int i = 0; i < next_state.size(); i++) {
+      //define short alias for ease
+      int g2 = next_state[i].g;
+      double x2 = next_state[i].x;
+      double y2 = next_state[i].y;
+      double theta2 = next_state[i].theta;
+
+      //check for cell validity
+      if (!is_valid_cell(x2, y2, grid)) {
+        //invalid cell
+        continue;
+      }
+
+      //get a valid 3D grid index given theta which is double
+      int stack2 = theta_to_stack_number(theta2);
+
+      //check if
+      //1. this cell is not in open cells list,
+      // OR
+      //2. is an obstacle
+      if (closed_value[stack2][idx(x2)][idx(y2)] == 1
+          || grid[idx(x2)][idx(y2)] == 1) {
+        continue;
+      }
+
+      //cell is not marked (open) and not an obstacle
+      //so add it to open cells list
+      maze_s state2;
+      state2.g = g2;
+      state2.x = x2;
+      state2.y = y2;
+      state2.theta = theta2;
+
+      opened.push_back(state2);
+
+      //mark this cell
+      closed[stack2][idx(x2)][idx(y2)] = next_state[i];
+      closed_value[stack2][idx(x2)][idx(y2)] = 1;
+      came_from[stack2][idx(x2)][idx(y2)] = next;
+
+      //increment closed cells count
+      total_closed += 1;
+    }
+
+  }
+  cout << "no valid path." << endl;
+  HBF::maze_path path;
+  path.closed = closed;
+  path.came_from = came_from;
+  path.final = state;
+  return path;
+
+}
+
+
