@@ -240,14 +240,14 @@ vector<HBF::maze_s> HBF::expand(HBF::maze_s state) {
   double y = state.y;
   double theta = state.theta;
 
-  //update g value for next cells
+  //update the g value for next cells
   int g2 = g + 1;
 
   vector<HBF::maze_s> next_states;
 
   //try steering angle from max left to max right to
   //find all possible configurations which will be later
-  //checked for validity in `search()` function
+  //checked for their validity in `search()` function
   for (double delta_i = -35; delta_i < 40; delta_i += 5) {
 
     //convert from degree to radian
@@ -364,7 +364,6 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
   //invalid configs as well (that lead to obstacles or out of grid or high cost)
   vector<maze_s> opened = { state };
 
-  bool finished = false;
   while (!opened.empty()) {
 
     maze_s next = opened[0]; //grab first elment
@@ -382,41 +381,55 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
       return path;
 
     }
+    //get all possible (valid and invalid) next states from current state
+    //using steering angle from max-left to max-right and
+    //equations of motion to predict (x, y, theta)
     vector<maze_s> next_state = expand(next);
 
+    //validate each next state before adding them to open set and
+    //marking them closed
     for (int i = 0; i < next_state.size(); i++) {
+      //define short alias for ease
       int g2 = next_state[i].g;
       double x2 = next_state[i].x;
       double y2 = next_state[i].y;
       double theta2 = next_state[i].theta;
 
+      //check for cell validity
       if (!is_valid_cell(x2, y2, grid)) {
         //invalid cell
         continue;
       }
 
+      //get a valid 3D grid index given theta which is double
       int stack2 = theta_to_stack_number(theta2);
 
       //check if
-      //1. this cell is in open cells list
-      //2. is not an obstacle
-      if (closed_value[stack2][idx(x2)][idx(y2)] == 0
-          && grid[idx(x2)][idx(y2)] == 0) {
-
-        maze_s state2;
-        state2.g = g2;
-        state2.x = x2;
-        state2.y = y2;
-        state2.theta = theta2;
-
-        opened.push_back(state2);
-
-        closed[stack2][idx(x2)][idx(y2)] = next_state[i];
-        closed_value[stack2][idx(x2)][idx(y2)] = 1;
-        came_from[stack2][idx(x2)][idx(y2)] = next;
-        total_closed += 1;
+      //1. this cell is not in open cells list,
+      // OR
+      //2. is an obstacle
+      if (closed_value[stack2][idx(x2)][idx(y2)] == 1
+          || grid[idx(x2)][idx(y2)] == 1) {
+        continue;
       }
 
+      //cell is not marked (open) and not an obstacle
+      //so add it to open cells list
+      maze_s state2;
+      state2.g = g2;
+      state2.x = x2;
+      state2.y = y2;
+      state2.theta = theta2;
+
+      opened.push_back(state2);
+
+      //mark this cell
+      closed[stack2][idx(x2)][idx(y2)] = next_state[i];
+      closed_value[stack2][idx(x2)][idx(y2)] = 1;
+      came_from[stack2][idx(x2)][idx(y2)] = next;
+
+      //increment closed cells count
+      total_closed += 1;
     }
 
   }
