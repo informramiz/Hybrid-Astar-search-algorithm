@@ -449,6 +449,7 @@ HBF::maze_path HBF::search_optimized(vector<vector<int> > grid, vector<double> s
   vector<vector<vector<maze_s> > > came_from(NUM_THETA_CELLS,
       vector<vector<maze_s>>(grid[0].size(), vector<maze_s>(grid.size())));
 
+  printf("rows, cols: %d, %d\n", closed[0].size(), closed[0][0].size());
   //initial values
   double theta = start[2];
   int stack = theta_to_stack_number(theta);
@@ -507,7 +508,7 @@ HBF::maze_path HBF::search_optimized(vector<vector<int> > grid, vector<double> s
 
     //Assign a very high value initially and make sure
     //there is no other maximum possible f_value than this one
-    int min_f_value = this->COST_FOR_OBSTACLE + grid.size() * grid[0].size();
+    int min_f_value = this->COST_FOR_OBSTACLE + grid.size() * grid[0].size() + next.g;
     //assign an invalid index initially
     int min_state_index = -1;
 
