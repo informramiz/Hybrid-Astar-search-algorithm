@@ -59,7 +59,7 @@ public:
   maze_path search(vector<vector<int> > grid, vector<double> start,
                    vector<int> goal);
 
-  maze_path search_optimized(vector<vector<int> > grid, vector<double> start,
+  maze_path search_with_holomonic_with_obstacles_heuristic(vector<vector<int> > grid, vector<double> start,
                    vector<int> goal);
 
   vector<maze_s> reconstruct_path(vector<vector<vector<maze_s> > > came_from,

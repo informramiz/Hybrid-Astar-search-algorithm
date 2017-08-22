@@ -65,7 +65,7 @@ int main() {
 
   HBF hbf = HBF();
 
-  HBF::maze_path get_path = hbf.search_optimized(GRID,START,GOAL);
+  HBF::maze_path get_path = hbf.search_with_holomonic_with_obstacles_heuristic(GRID,START,GOAL);
 
   vector<HBF::maze_s> show_path = hbf.reconstruct_path(get_path.came_from, START, get_path.final);
 

@@ -433,7 +433,7 @@ HBF::maze_path HBF::search(vector<vector<int> > grid, vector<double> start,
 
 }
 
-HBF::maze_path HBF::search_optimized(vector<vector<int> > grid, vector<double> start,
+HBF::maze_path HBF::search_with_holomonic_with_obstacles_heuristic(vector<vector<int> > grid, vector<double> start,
                            vector<int> goal) {
 
   /*
